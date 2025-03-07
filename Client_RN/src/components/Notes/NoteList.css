@@ -1,0 +1,142 @@
+/* Estilos para la lista de notas */
+h2 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+legend {
+    font-weight: bold;
+    color:rgb(146, 192, 120);
+
+}
+
+fieldset{
+    border-color: green;
+}
+
+li.liListNote {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+p {
+    font-size: 20px;
+    color: black;
+}
+
+p.p-fecha{
+    font-size: 14px;
+    color: rgb(146, 192, 120);
+    font-style: italic;
+    font-weight: bold;
+    text-align: right;
+}
+
+hr {
+    margin: 10px 0;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+/* Estilos para los botones */
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button.delete {
+    background-color: #f44336;
+    /* Rojo para eliminar */
+    color: white;
+}
+
+button.add {
+    background-color: orange;
+    /* Rojo para eliminar */
+    color: white;
+}
+
+button.edit {
+    background-color: #2196f3;
+    /* Azul para editar */
+    color: white;
+}
+
+/* Estilos para el modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button.confirm-delete,
+button.cancel-delete {
+    margin: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.confirm-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+button.cancel-delete {
+    background-color: #4caf50;
+    color: white;
+}
+
+/* Estilos para la barra de búsqueda */
+.search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #0056b3;
+}
