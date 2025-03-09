@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getNotes } from '../../services/api';
+import { getNotes } from '../../services/apiNotes';
 import { getCurrentDate } from '../../utils/dateUtils'; // Importamos la función de fechas
 import './NoteList.css';
+
 
 interface Note {
   id: number;
@@ -106,9 +107,8 @@ const NotesList: React.FC = () => {
               <Link to={`/edit/${note.id}`}>
                 <button className="edit">Editar</button>
               </Link>
-              <button className="add">
-                Añadir Tarea
-              </button>
+              
+
             </li>
           ))
         ) : (

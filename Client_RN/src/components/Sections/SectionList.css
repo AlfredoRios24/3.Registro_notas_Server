@@ -1,0 +1,36 @@
+.liListSection {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .delete {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    text-align: center;
+  }
+  
+  .confirm-delete,
+  .cancel-delete {
+    padding: 10px 20px;
+    margin: 5px;
+  }
+  
