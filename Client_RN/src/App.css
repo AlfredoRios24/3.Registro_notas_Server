@@ -48,12 +48,14 @@ header {
     width: 100%;
     bottom: 0;
   }
+  .p-footer{
+    color:white
+  }
 
-  .footer-swagger{
+  a{
+    font-size: x-large;
     color: red;
-    font-size: large;
-    font-weight: bold;
     text-decoration: none;
-
+    font-style: bold;
   }
   

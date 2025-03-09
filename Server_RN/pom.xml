@@ -64,7 +64,6 @@
 			<artifactId>mysql</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -72,7 +71,6 @@
 		</dependency>
 
 	</dependencies>
-
 
 	<build>
 		<plugins>

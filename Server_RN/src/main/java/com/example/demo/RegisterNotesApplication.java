@@ -9,10 +9,6 @@ public class RegisterNotesApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RegisterNotesApplication.class, args);
 	}
-	 //http://localhost:8092/api/notes
-
-	//http://localhost:8092/api/sections
-
-	//SWAGGER: http://localhost:8092/swagger-ui/index.html
-
+//  http://localhost:8091/api/notes/
+//  SWAGGER:   http://localhost:8091/swagger-ui/index.html
 }

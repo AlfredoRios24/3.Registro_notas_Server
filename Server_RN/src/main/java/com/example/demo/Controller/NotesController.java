@@ -1,64 +1,53 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Models.Notes;
-import com.example.demo.Repository.NotesRepository;
+import com.example.demo.Service.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/notes")
+@RequestMapping("/api/")
 @CrossOrigin(origins = "http://localhost:5173")
 public class NotesController {
 
     @Autowired
-    private NotesRepository notesRepository;
+    private NotesService notesService;
 
-    // Método para guardar una nota
-    @PostMapping("")
+    // Método para guardar todas las notas
+    @PostMapping("/register/")
     public ResponseEntity<Notes> registerNotes(@RequestBody Notes notes) {
-        // Establecer startDate y endDate si no están presentes
-        if (notes.getStartDate() == null) {
-            notes.setStartDate(LocalDateTime.now());
-        }
-        if (notes.getEndDate() == null) {
-            notes.setEndDate(LocalDateTime.now());  // O puedes usar un valor distinto si lo prefieres
-        }
-        // Guardar la nota
-        Notes savedNotes = notesRepository.save(notes);
+        Notes savedNotes = notesService.saveNote(notes);
         return ResponseEntity.ok(savedNotes);
     }
 
-    // Método para obtener una nota por ID
-    @GetMapping("/{id}")
+    // Método para obtener 1 nota con ID
+    @GetMapping("/notes/{id}")
     public ResponseEntity<Notes> getNoteById(@PathVariable Long id) {
-        Optional<Notes> noteOptional = notesRepository.findById(id);
-        return noteOptional.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(404).body(null));
+        Optional<Notes> noteOptional = notesService.getNoteById(id);
+        return noteOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).body(null));
     }
 
     // Método para obtener todas las notas
-    @GetMapping("")
+    @GetMapping("/notes/")
     public ResponseEntity<List<Notes>> getNotes() {
         try {
-            List<Notes> notes = notesRepository.findAll();
+            List<Notes> notes = notesService.getAllNotes();
             return ResponseEntity.ok(notes);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(null);
+            e.printStackTrace(); // Muestra el error completo en los logs
+            return ResponseEntity.status(500).body(null); // Devuelve una respuesta 500
         }
     }
 
     // Método para eliminar una nota por ID
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/notes/{id}")
     public ResponseEntity<String> deleteNotes(@PathVariable Long id) {
-        Optional<Notes> notesOptional = notesRepository.findById(id);
-        if (notesOptional.isPresent()) {
-            notesRepository.deleteById(id);
+        boolean deleted = notesService.deleteNote(id);
+        if (deleted) {
             return ResponseEntity.ok("Nota eliminada exitosamente");
         } else {
             return ResponseEntity.status(404).body("Nota no encontrada");
@@ -66,31 +55,9 @@ public class NotesController {
     }
 
     // Método para actualizar una nota
-    @PutMapping("/{id}")
+    @PutMapping("/notes/{id}")
     public ResponseEntity<Notes> updateNotes(@PathVariable Long id, @RequestBody Notes updatedNotes) {
-        Optional<Notes> notesOptional = notesRepository.findById(id);
-        if (notesOptional.isPresent()) {
-            Notes notes = notesOptional.get();
-            notes.setTitle(updatedNotes.getTitle());
-            notes.setContent(updatedNotes.getContent());
-
-            // Si las fechas no se proporcionan, asignar fechas por defecto
-            if (updatedNotes.getStartDate() == null) {
-                notes.setStartDate(LocalDateTime.now());
-            } else {
-                notes.setStartDate(updatedNotes.getStartDate());
-            }
-
-            if (updatedNotes.getEndDate() == null) {
-                notes.setEndDate(LocalDateTime.now()); // O puedes poner otro valor
-            } else {
-                notes.setEndDate(updatedNotes.getEndDate());
-            }
-
-            Notes savedNotes = notesRepository.save(notes);
-            return ResponseEntity.ok(savedNotes);
-        } else {
-            return ResponseEntity.status(404).body(null);
-        }
+        Optional<Notes> updated = notesService.updateNote(id, updatedNotes);
+        return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).body(null));
     }
 }
