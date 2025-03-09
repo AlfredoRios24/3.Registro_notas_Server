@@ -1,0 +1,286 @@
+.view-note-wrapper {
+  position: relative; /* Contenedor para las flechas fuera de la tarjeta */
+
+}
+
+.view-note-container {
+  position: fixed; /* Fija el contenedor en la pantalla */
+  top: 50%; /* Centrado vertical */
+  left: 50%; /* Centrado horizontal */
+  transform: translate(-50%, -50%); /* Centrado perfecto tanto vertical como horizontal */
+  width: 90%; /* El contenedor ocupa el 80% del ancho de la pantalla */
+  max-width: 1200px; /* Ancho máximo de 1200px */
+  height: 70%; /* Altura del contenedor es el 70% de la pantalla */
+  background: #fff; /* Fondo blanco */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9); /* Sombra suave alrededor */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interior de 20px */
+  overflow-y: auto; /* Desplazamiento vertical si el contenido excede el área visible */
+  display: flex; /* Usamos Flexbox para organizar el contenido */
+  flex-direction: column; /* Organiza los elementos de forma vertical */
+  justify-content: space-between; /* Alinea el contenido verticalmente al inicio */
+  align-items: center; /* Alinea el contenido horizontalmente en el centro */
+  transition: transform 0.3s ease-in-out; /* Transición suave cuando cambia la posición */
+  
+  
+}
+
+.content-container{
+
+  width: 1000px;
+  height: 150px;
+  max-height:400px;
+  
+}
+
+.note-content {
+  flex: 1; /* Toma el espacio restante disponible en el contenedor */
+  text-align: center; /* Centra el texto */
+  padding: 10px; /* Relleno interior de 20px */
+  overflow-y: auto; /* Desplazamiento vertical si el contenido excede el área visible */
+}
+
+h2 {
+  font-size: 2rem; /* Tamaño de fuente para el título */
+  color: #333; /* Color gris oscuro para el título */
+  margin-bottom: 20px; /* Separación de 20px con el contenido siguiente */
+}
+
+p {
+  font-size: 1.5rem; /* Tamaño de fuente para los párrafos */
+  color: #555; /* Color gris para el texto */
+  line-height: 1.6; /* Espaciado entre líneas para mayor legibilidad */
+}
+
+.close-btn {
+  position: absolute; /* Posición absoluta dentro del contenedor */
+  top: 10px; /* A 10px del borde superior */
+  right: 10px; /* A 10px del borde derecho */
+  background: #ff4081; /* Color de fondo rosa */
+  color: white; /* Texto blanco */
+  border: none; /* Sin borde */
+  padding: 8px 12px; /* Relleno interior para el botón */
+  font-size: 1.9rem; /* Tamaño de fuente para el texto dentro del botón */
+  border-radius: 50%; /* Botón redondeado */
+  cursor: pointer; /* Cursor de mano al pasar el ratón sobre el botón */
+  transition: background-color 0.3s; /* Transición suave en el color de fondo */
+}
+
+.close-btn:hover {
+  background-color: #e91e63; /* Cambio de color al pasar el ratón */
+}
+
+.nav-btn {
+  background: white; /* Fondo blanco para el botón */
+  border: none; /* Sin borde */
+  font-size: 10rem; /* Tamaño grande para las flechas */
+  color: black; /* Color negro para las flechas */
+  cursor: pointer; /* Cursor de mano al pasar el ratón sobre el botón */
+  transition: color 0.3s ease-in-out; /* Transición suave en el color */
+}
+
+.nav-btn:hover {
+  color: #ff4081; /* Cambio de color al pasar el ratón (rosa) */
+}
+
+.left {
+  position: fixed; /* Fija el botón a la izquierda de la pantalla */
+  left: 200px; /* Pegado al borde izquierdo */
+  top: 50%; /* Centrado verticalmente */
+  transform: translateY(-50%); /* Centrado perfecto verticalmente */
+}
+
+.right {
+  position: fixed; /* Fija el botón a la derecha de la pantalla */
+  right: 200px; /* Pegado al borde derecho */
+  top: 50%; /* Centrado verticalmente */
+  transform: translateY(-50%); /* Centrado perfecto verticalmente */
+}
+
+.view-note-container::-webkit-scrollbar {
+  width: 8px; /* Define el ancho de la barra de desplazamiento */
+}
+
+.view-note-container::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color de la barra de desplazamiento */
+  border-radius: 10px; /* Bordes redondeados para la barra de desplazamiento */
+}
+
+.view-note-container::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Cambio de color de la barra al pasar el ratón */
+}
+
+/* Nuevo contenedor para los botones debajo del contenido */
+.actions-container {
+  display: flex;
+  justify-content: center; /* Centra los botones en el contenedor */
+  gap: 20px; /* Espacio entre los botones */
+  margin-top: 20px; /* Espacio hacia arriba desde el contenido */
+}
+
+button {
+  padding: 8px 10px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 30px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+button.edit {
+  background-color: #2196f3;
+  color: white;
+}
+
+button.confirm-delete {
+  background-color: #f44336;
+  color: white;
+}
+
+button.cancel-delete {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Alineación de fechas en paralelo */
+.dates-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.date-item {
+
+  text-align: center;
+  align-items: center;
+
+}
+
+
+
+p.p-fecha {
+  
+  font-size: 20px;
+  color: black;
+  font-style: italic;
+  font-weight: bold;
+  text-align: right;
+}
+
+/* Círculo de estado */
+.state-circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Colores según el estado */
+.state-pending {
+  background-color: yellow;
+}
+
+.state-in_progress {
+  background-color: cyan;
+}
+
+.state-completed {
+  background-color: green;
+}
+
+/* Contenedor del estado */
+.state-container {
+  display: flex;
+  align-items: center; /* Alinea verticalmente los elementos */
+  justify-content: center; /* Asegura que los puntos estén alineados correctamente */
+  gap: 50px; /* Espaciado entre el texto y el círculo */
+  margin-top: 10px; /* Espacio hacia arriba */
+}
+
+.state-container p {
+  margin-right: 15px; /* Ajusta según sea necesario */
+}
+
+
+/* Contenedor para alinear los botones a la izquierda y el resto a la derecha */
+.actions-container {
+  display: flex;
+  justify-content: center; /* Asegura que los botones estén centrados */
+  gap: 20px; /* Espacio entre los botones */
+  margin-top: 20px; /* Espacio entre el contenido y los botones */
+
+}
+
+/* Contenedor de fechas para que se alineen correctamente */
+.dates-container {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 10px;
+  flex-grow: 1;
+  padding-top: 10px;
+
+}
+/* Estado alineado correctamente */
+.state-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+
+/* Estilos para el modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.state-circle {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.state-pending {
+  background-color: yellow;
+}
+
+.state-in-progress {
+  background-color: cyan;
+}
+
+.state-completed {
+  background-color: green;
+}
+
+

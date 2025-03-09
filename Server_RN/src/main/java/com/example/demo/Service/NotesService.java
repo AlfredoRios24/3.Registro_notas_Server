@@ -1,10 +1,12 @@
 package com.example.demo.Service;
 
+import com.example.demo.Models.NoteState;
 import com.example.demo.Models.Notes;
 import com.example.demo.Repository.NotesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +18,12 @@ public class NotesService {
 
     // Guardar una nueva nota
     public Notes saveNote(Notes notes) {
+        if (notes.getCreateAt() == null) {
+            notes.setCreateAt(LocalDateTime.now());
+        }
+        if (notes.getState() == null) {
+            notes.setState(NoteState.PENDING); // Valor por defecto
+        }
         return notesRepository.save(notes);
     }
 
@@ -46,7 +54,11 @@ public class NotesService {
             Notes existingNotes = notesOptional.get();
             existingNotes.setTitle(updatedNotes.getTitle());
             existingNotes.setContent(updatedNotes.getContent());
+            existingNotes.setStartDate(updatedNotes.getStartDate());
+            existingNotes.setEndDate(updatedNotes.getEndDate());
+            existingNotes.setState(updatedNotes.getState());
             return Optional.of(notesRepository.save(existingNotes));
+
         }
         return Optional.empty();
     }

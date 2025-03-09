@@ -4,27 +4,24 @@ import EditNote from './components/Notes/EditNote';
 import { NoteList } from './components/Notes/NoteList';
 import RegisterNote from './components/Notes/RegisterNote';
 
-
 function App() {
   return (
     <Router>
-      <div className="app-container">
-      <div className="main-content">
+      <div>
         {/* Encabezado de la aplicación */}
         <header>
-          <h1>Aplicación de Notas</h1>
+          <h1>Mi Aplicación de Notas</h1>
         </header>
 
         {/* Barra de navegación */}
         <nav>
           <ul>
             <li>
-              <Link to="/">Lista de Notas</Link>
+              <Link to="/">Ver Notas</Link>
             </li>
             <li>
               <Link to="/register">Registrar Nota</Link>
             </li>
-
           </ul>
         </nav>
 
@@ -42,7 +39,6 @@ function App() {
           <p className='p-footer'>&copy; 2025 Mi Aplicación de Notas</p>
           <a href="http://localhost:8091/swagger-ui/index.html" target='blank'>Swagger</a>
         </footer>
-      </div>
       </div>
     </Router>
   );

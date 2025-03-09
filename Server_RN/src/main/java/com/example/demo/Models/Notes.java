@@ -1,9 +1,8 @@
 package com.example.demo.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class Notes {
@@ -15,12 +14,39 @@ public class Notes {
     private String title;
     private String content;
 
-    //Constructor
-    public Notes(){}
+    @Column(name = "start_date")
+    private LocalDateTime startDate;
 
-    public Notes(String titleNotes, String content) {
-        this.title = titleNotes;
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
+
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private NoteState state;
+
+    //Constructor
+
+
+    public Notes() {
+    }
+
+    // Constructor de conveniencia (opcional)
+    public Notes(String testTitle, String testContent) {
+        this.title = testTitle;
+        this.content = testContent;
+    }
+
+    public Notes(Long id, String title, String content, LocalDateTime endDate, LocalDateTime startDate, LocalDateTime createAt, NoteState state) {
+        this.id = id;
+        this.title = title;
         this.content = content;
+        this.endDate = endDate;
+        this.startDate = startDate;
+        this.createAt = createAt;
+        this.state = state;
     }
 
     //Getters ands Setters
@@ -46,5 +72,37 @@ public class Notes {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDateTime getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
+    }
+
+    public NoteState getState() {
+        return state;
+    }
+
+    public void setState(NoteState state) {
+        this.state = state;
     }
 }

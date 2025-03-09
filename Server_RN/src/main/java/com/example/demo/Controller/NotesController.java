@@ -1,11 +1,13 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Models.NoteState;
 import com.example.demo.Models.Notes;
 import com.example.demo.Service.NotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,12 @@ public class NotesController {
     // Método para guardar todas las notas
     @PostMapping("/register/")
     public ResponseEntity<Notes> registerNotes(@RequestBody Notes notes) {
+        if (notes.getCreateAt() == null) {
+            notes.setCreateAt(LocalDateTime.now());  // Establecer la fecha de creación
+        }
+        if (notes.getState() == null) {
+            notes.setState(NoteState.PENDING);  // Si no se especifica, establecer el estado como PENDING por defecto
+        }
         Notes savedNotes = notesService.saveNote(notes);
         return ResponseEntity.ok(savedNotes);
     }
@@ -56,8 +64,12 @@ public class NotesController {
 
     // Método para actualizar una nota
     @PutMapping("/notes/{id}")
-    public ResponseEntity<Notes> updateNotes(@PathVariable Long id, @RequestBody Notes updatedNotes) {
-        Optional<Notes> updated = notesService.updateNote(id, updatedNotes);
-        return updated.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).body(null));
+    public ResponseEntity<Notes> updateNote(@PathVariable Long id, @RequestBody Notes updatedNote) {
+        Optional<Notes> existingNote = notesService.updateNote(id, updatedNote);
+        if (existingNote.isPresent()) {
+            return ResponseEntity.ok(existingNote.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -4,9 +4,9 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8091/api';
 
 const formatDate = (date: Date) => {
-    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000); // Ajuste a la zona horaria local
-    return localDate.toISOString().split('.')[0];  // Solo la parte de la fecha (YYYY-MM-DD)
+    return date.toISOString().split('.')[0]; // Remueve la zona horaria 'Z'
 };
+
 export const getNotes = async () => {
     try {
         const response = await axios.get(`${API_URL}/notes/`);

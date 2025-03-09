@@ -13,64 +13,6 @@ const EditNote: React.FC = () => {
   const [endDate, setEndDate] = useState('');
   const [state, setState] = useState('PENDING');
 
-  // Función para formatear la fecha a "YYYY-MM-DD"
-  const formatDate = (date: Date) => {
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-    
-      if (!startDate || !endDate || !state) {
-        alert('Por favor, complete todos los campos obligatorios.');
-        return;
-      }
-    
-      // Verificación de las fechas
-      if (new Date(startDate) > new Date(endDate)) {
-        alert('La fecha de inicio no puede ser posterior a la fecha de fin.');
-        return;
-      }
-    
-      const updatedNote = { 
-        title, 
-        content, 
-        startDate, 
-        endDate, 
-        state 
-      };
-    
-      console.log('Datos enviados:', updatedNote);  // Verificar los datos antes de enviarlos
-    
-      const formatDate = (date: Date) => {
-        return date.toISOString().split('.')[0];  // Se asegura de que la fecha tenga la hora
-      };
-
-      try {
-        const formattedStartDate = formatDate(new Date(startDate));
-        const formattedEndDate = formatDate(new Date(endDate));
-    
-        const updatedNoteWithDates = { 
-          title, 
-          content, 
-          startDate: formattedStartDate, 
-          endDate: formattedEndDate, 
-          state 
-        };
-    
-        await updateNoteEdit(Number(id), updatedNoteWithDates);
-        alert('Nota actualizada con éxito');
-        navigate('/');
-      } catch (error) {
-        console.error('Error al actualizar la nota:', error);
-        alert('Error al actualizar la nota');
-      }
-    };
-
-
-
-    const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000); // Ajuste a la zona horaria local
-    return localDate.toISOString().split('T')[0];  // Solo la parte de la fecha (YYYY-MM-DD)
-  };
-
   useEffect(() => {
     const fetchNote = async () => {
       try {
@@ -80,8 +22,8 @@ const EditNote: React.FC = () => {
           console.log('Nota obtenida:', note);
           setTitle(note.title);
           setContent(note.content);
-          setStartDate(note.startDate ? note.startDate.split('T')[0] : '');  // Asignar fecha de inicio
-          setEndDate(note.endDate ? note.endDate.split('T')[0] : '');      // Asignar fecha de fin
+          setStartDate(note.startDate || '');  // Asignar fecha de inicio
+          setEndDate(note.endDate || '');      // Asignar fecha de fin
           setState(note.state || 'PENDING');   // Asignar estado
         } else {
           console.error('ID no válido');
@@ -116,8 +58,8 @@ const EditNote: React.FC = () => {
 
     try {
       // Convertimos las fechas al formato adecuado si es necesario
-      const formattedStartDate = formatDate(new Date(startDate));
-      const formattedEndDate = formatDate(new Date(endDate));
+      const formattedStartDate = startDate ? new Date(startDate).toISOString().split('T')[0] : null;
+      const formattedEndDate = endDate ? new Date(endDate).toISOString().split('T')[0] : null;
 
       // Enviamos la nota actualizada al backend
       const updatedNoteWithDates = { 
@@ -134,11 +76,7 @@ const EditNote: React.FC = () => {
       console.error('Error al actualizar la nota:', error);
       alert('Error al actualizar la nota');
     }
-
-
   };
-
-
 
   return (
     <div>

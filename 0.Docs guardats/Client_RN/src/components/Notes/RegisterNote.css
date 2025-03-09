@@ -97,8 +97,8 @@ textarea.textarea-content {
 }
 
 .state-option.in_progress {
-    background-color: orange;
-    border-color: orange;
+    background-color: lightblue;
+    border-color: lightblue;
     color: black;
 }
 
@@ -110,7 +110,7 @@ textarea.textarea-content {
 
 button.btn-Registrar {
     padding: 10px 20px;
-    background-color: #ff4081;
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;

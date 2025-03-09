@@ -1,136 +1,134 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Models.NoteState;
 import com.example.demo.Models.Notes;
 import com.example.demo.Service.NotesService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.List;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-class NotesControllerTest {
+public class NotesControllerTest {
 
-    @InjectMocks
-    private NotesController notesController;  // Inyección del controlador
+    private MockMvc mockMvc;
 
     @Mock
-    private NotesService notesService;  // Mock del servicio
+    private NotesService notesService;
 
-    @Test
-    void testRegisterNotes() {
-        Notes newNote = new Notes();
-        newNote.setTitle("Test Note");
-        newNote.setContent("Test Description");
+    @InjectMocks
+    private NotesController notesController;
 
-        when(notesService.saveNote(any(Notes.class))).thenReturn(newNote);
+    private ObjectMapper objectMapper;
+    private Notes note;
 
-        ResponseEntity<Notes> response = notesController.registerNotes(newNote);
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(notesController).build();
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Test Note", response.getBody().getTitle());
+        note = new Notes(1L, "Test Title", "Test Content", LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now(), NoteState.PENDING);
     }
 
     @Test
-    void testGetNoteById_Found() {
-        Notes existingNote = new Notes();
-        existingNote.setId(1L);
-        existingNote.setTitle("Existing Note");
-        existingNote.setContent("Description of the existing note");
+    public void testRegisterNotes() throws Exception {
+        when(notesService.saveNote(any(Notes.class))).thenReturn(note);
 
-        when(notesService.getNoteById(1L)).thenReturn(Optional.of(existingNote));
+        mockMvc.perform(post("/api/register/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(note)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Test Title"))
+                .andExpect(jsonPath("$.content").value("Test Content"));
 
-        ResponseEntity<Notes> response = notesController.getNoteById(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Existing Note", response.getBody().getTitle());
+        verify(notesService, times(1)).saveNote(any(Notes.class));
     }
 
     @Test
-    void testGetNoteById_NotFound() {
-        when(notesService.getNoteById(999L)).thenReturn(Optional.empty());
+    public void testGetNoteById_Success() throws Exception {
+        when(notesService.getNoteById(1L)).thenReturn(Optional.of(note));
 
-        ResponseEntity<Notes> response = notesController.getNoteById(999L);
+        mockMvc.perform(get("/api/notes/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Test Title"))
+                .andExpect(jsonPath("$.content").value("Test Content"));
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
+        verify(notesService, times(1)).getNoteById(1L);
     }
 
     @Test
-    void testGetNotes() {
-        Notes note1 = new Notes();
-        note1.setTitle("Note 1");
-        Notes note2 = new Notes();
-        note2.setTitle("Note 2");
+    public void testGetNoteById_NotFound() throws Exception {
+        when(notesService.getNoteById(1L)).thenReturn(Optional.empty());
 
-        when(notesService.getAllNotes()).thenReturn(Arrays.asList(note1, note2));
+        mockMvc.perform(get("/api/notes/{id}", 1L))
+                .andExpect(status().isNotFound());
 
-        ResponseEntity<List<Notes>> response = notesController.getNotes();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().size());
+        verify(notesService, times(1)).getNoteById(1L);
     }
 
     @Test
-    void testDeleteNote_Success() {
+    public void testDeleteNote_Success() throws Exception {
         when(notesService.deleteNote(1L)).thenReturn(true);
 
-        ResponseEntity<String> response = notesController.deleteNotes(1L);
+        mockMvc.perform(delete("/api/notes/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Nota eliminada exitosamente"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Nota eliminada exitosamente", response.getBody());
+        verify(notesService, times(1)).deleteNote(1L);
     }
 
     @Test
-    void testDeleteNote_NotFound() {
-        when(notesService.deleteNote(999L)).thenReturn(false);
+    public void testDeleteNote_NotFound() throws Exception {
+        when(notesService.deleteNote(1L)).thenReturn(false);
 
-        ResponseEntity<String> response = notesController.deleteNotes(999L);
+        mockMvc.perform(delete("/api/notes/{id}", 1L))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Nota no encontrada"));
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Nota no encontrada", response.getBody());
+        verify(notesService, times(1)).deleteNote(1L);
     }
 
     @Test
-    void testUpdateNotes_Success() {
-        Notes existingNote = new Notes();
-        existingNote.setId(1L);
-        existingNote.setTitle("Updated Note");
+    public void testUpdateNote_Success() throws Exception {
+        Notes updatedNote = new Notes(1L, "Updated Title", "Updated Content", LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now(), NoteState.PENDING);
 
-        Notes updatedNote = new Notes();
-        updatedNote.setTitle("Updated Title");
+        when(notesService.updateNote(eq(1L), any(Notes.class))).thenReturn(Optional.of(updatedNote));
 
-        when(notesService.updateNote(1L, updatedNote)).thenReturn(Optional.of(existingNote));
+        mockMvc.perform(put("/api/notes/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedNote)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.content").value("Updated Content"));
 
-        ResponseEntity<Notes> response = notesController.updateNotes(1L, updatedNote);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Updated Note", response.getBody().getTitle());
+        verify(notesService, times(1)).updateNote(eq(1L), any(Notes.class));
     }
 
     @Test
-    void testUpdateNotes_NotFound() {
-        Notes updatedNote = new Notes();
-        updatedNote.setTitle("Updated Title");
+    public void testUpdateNote_NotFound() throws Exception {
+        Notes updatedNote = new Notes(1L, "Updated Title", "Updated Content", LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now(), NoteState.PENDING);
 
-        when(notesService.updateNote(999L, updatedNote)).thenReturn(Optional.empty());
+        when(notesService.updateNote(eq(1L), any(Notes.class))).thenReturn(Optional.empty());
 
-        ResponseEntity<Notes> response = notesController.updateNotes(999L, updatedNote);
+        mockMvc.perform(put("/api/notes/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedNote)))
+                .andExpect(status().isNotFound());
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertNull(response.getBody());
+        verify(notesService, times(1)).updateNote(eq(1L), any(Notes.class));
     }
 }

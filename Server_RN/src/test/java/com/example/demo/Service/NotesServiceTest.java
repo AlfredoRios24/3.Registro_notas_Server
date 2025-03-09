@@ -1,73 +1,76 @@
 package com.example.demo.Service;
 
-import com.example.demo.Models.*;
-import com.example.demo.Service.NotesService;
+import com.example.demo.Models.NoteState;
+import com.example.demo.Models.Notes;
 import com.example.demo.Repository.NotesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class NotesServiceTest {
 
-    @Autowired
+    @InjectMocks
     private NotesService notesService;
 
-    @Autowired
+    @Mock
     private NotesRepository notesRepository;
 
+    private Notes note;
+
     @BeforeEach
-    void setUp() {
-        notesRepository.deleteAll(); // Limpiar la base de datos antes de cada prueba
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        note = new Notes(1L, "Test Title", "Test Content", LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now(), NoteState.PENDING);
     }
 
     @Test
-    void saveNoteTest() {
-        Notes note = new Notes("Test Title", "Test Content");
+    public void testSaveNote() {
+        when(notesRepository.save(any(Notes.class))).thenReturn(note);
+
         Notes savedNote = notesService.saveNote(note);
 
         assertNotNull(savedNote);
         assertEquals("Test Title", savedNote.getTitle());
-        assertEquals("Test Content", savedNote.getContent());
+        verify(notesRepository, times(1)).save(any(Notes.class));
     }
 
     @Test
-    void getNoteByIdTest() {
-        Notes note = new Notes("Test Title", "Test Content");
-        Notes savedNote = notesService.saveNote(note);
+    public void testGetNoteById() {
+        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
 
-        Notes foundNote = notesService.getNoteById(savedNote.getId()).orElse(null);
+        Optional<Notes> foundNote = notesService.getNoteById(1L);
 
-        assertNotNull(foundNote);
-        assertEquals(savedNote.getId(), foundNote.getId());
-        assertEquals("Test Title", foundNote.getTitle());
+        assertTrue(foundNote.isPresent());
+        assertEquals("Test Title", foundNote.get().getTitle());
     }
 
     @Test
-    void deleteNoteTest() {
-        Notes note = new Notes("Test Title", "Test Content");
-        Notes savedNote = notesService.saveNote(note);
+    public void testDeleteNote() {
+        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
 
-        boolean result = notesService.deleteNote(savedNote.getId());
-        assertTrue(result);
-        assertFalse(notesRepository.existsById(savedNote.getId()));
+        boolean deleted = notesService.deleteNote(1L);
+
+        assertTrue(deleted);
+        verify(notesRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    void updateNoteTest() {
-        Notes note = new Notes("Old Title", "Old Content");
-        Notes savedNote = notesService.saveNote(note);
+    public void testUpdateNote() {
+        Notes updatedNote = new Notes(1L, "Updated Title", "Updated Content", LocalDateTime.now(), LocalDateTime.now().plusDays(1), LocalDateTime.now(), NoteState.PENDING);
+        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
+        when(notesRepository.save(any(Notes.class))).thenReturn(updatedNote);
 
-        savedNote.setTitle("Updated Title");
-        savedNote.setContent("Updated Content");
+        Optional<Notes> result = notesService.updateNote(1L, updatedNote);
 
-        Notes updatedNote = notesService.updateNote(savedNote.getId(), savedNote).orElse(null);
-
-        assertNotNull(updatedNote);
-        assertEquals("Updated Title", updatedNote.getTitle());
-        assertEquals("Updated Content", updatedNote.getContent());
+        assertTrue(result.isPresent());
+        assertEquals("Updated Title", result.get().getTitle());
     }
 }

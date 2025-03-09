@@ -9,21 +9,6 @@ body, html {
   justify-content: space-between; /* Esto garantiza que el footer se quede abajo */
 }
 
-
-/* El contenedor principal de la aplicación */
-.app-container {
-  display: flex;
-  flex-direction: column;
-  grid-template-rows: 1fr auto;
-  min-height: 100%; /* Asegura que el contenedor principal ocupe el 100% de la altura de la ventana */
-}
-
-/* El contenido principal */
-.main-content {
-  flex: 1; /* Hace que el contenido ocupe todo el espacio disponible */
-}
-
-
 /* Estilos para el encabezado */
 header {
   background-color: #4CAF50; /* Fondo verde */
@@ -75,11 +60,8 @@ footer {
   background-color: #333;
   color: white;
   text-align: center;
-  padding: 10px;
-  height: 100%;
-
+  padding: 10px 0;
   width: 100%; /* Asegura que el footer ocupe todo el ancho */
-  position: fixed;
 }
 
 .p-footer {

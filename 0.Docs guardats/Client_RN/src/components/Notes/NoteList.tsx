@@ -102,7 +102,7 @@ export const NoteList: React.FC = () => {
 
   return (
     <div>
-
+      <h2>Lista de Notas</h2>
       <input
         type="text"
         placeholder="Buscar por título o contenido"
@@ -123,7 +123,7 @@ export const NoteList: React.FC = () => {
         />
       ) : (
         <div>
-
+          <h1>Mi Tabla Ordenable</h1>
           <Table data={data} columns={columns} />
         </div>
       )}
