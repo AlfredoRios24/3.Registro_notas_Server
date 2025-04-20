@@ -1,81 +1,62 @@
-/* Estilos para la sección de registrar nota */
-h2 {
-    font-size: 28px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
+/* === Estilos para RegisterNote === */
 form {
     background-color: #f9f9f9;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     max-width: 900px;
     margin: 0 auto;
-}
-
-div {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  div {
     margin-bottom: 15px;
-}
-
-label {
+  }
+  
+  label {
     font-size: 16px;
     color: #333;
     display: block;
     margin-bottom: 5px;
-}
-
-input,
-textarea {
+  }
+  
+  input,
+  textarea {
     width: 95%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #fff;
-}
-
-textarea {
+  }
+  
+  textarea {
     resize: vertical;
     min-height: 100px;
-}
-
-input,
-textarea.textarea-content {
-    width: 95%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-}
-
-textarea.textarea-content {
+  }
+  
+  textarea.textarea-content {
     resize: vertical;
     min-height: 300px;
-}
-
-.form-date {
+  }
+  
+  .form-date {
     display: flex;
     justify-content: space-between;
     gap: 10px;
-}
-
-.form-date label {
+  }
+  
+  .form-date label,
+  .form-date input {
     width: 100%;
-}
-
-.form-date input {
-    width: 100%;
-}
-
-.form-state {
+  }
+  
+  .form-state {
     display: flex;
     justify-content: center;
     gap: 10px;
-}
-
-.state-option {
+  }
+  
+  .state-option {
     padding: 10px 15px;
     border: 2px solid #ccc;
     border-radius: 5px;
@@ -84,31 +65,31 @@ textarea.textarea-content {
     text-align: center;
     transition: all 0.3s;
     width: 100px;
-}
-
-.state-option:hover {
+  }
+  
+  .state-option:hover {
     background-color: #e0e0e0;
-}
-
-.state-option.pending {
+  }
+  
+  .state-option.pending {
     background-color: yellow;
     border-color: yellow;
     color: black;
-}
-
-.state-option.in_progress {
+  }
+  
+  .state-option.in_progress {
     background-color: orange;
     border-color: orange;
     color: black;
-}
-
-.state-option.completed {
+  }
+  
+  .state-option.completed {
     background-color: lightgreen;
     border-color: lightgreen;
     color: black;
-}
-
-button.btn-Registrar {
+  }
+  
+  button.btn-Registrar {
     padding: 10px 20px;
     background-color: #ff4081;
     color: white;
@@ -118,8 +99,12 @@ button.btn-Registrar {
     font-size: 16px;
     width: 100%;
     margin-top: 10px;
-}
-
-button:hover.btn-Registrar {
+  }
+  
+  button:hover.btn-Registrar {
     opacity: 0.8;
-}
+  }
+  
+  .btn-Registrar:active {
+    opacity: 0.6;
+  }

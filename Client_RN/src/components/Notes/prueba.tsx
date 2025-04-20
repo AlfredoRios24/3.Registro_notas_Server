@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./ViewNote.css"; // Asegúrate de tener los estilos adecuados en este archivo
+import "./RegisterNote.css"; // Asegúrate de tener los estilos adecuados en este archivo
 import StateCircle from "./StateCiercleProps";
 
 interface Note {
@@ -65,14 +65,12 @@ const ViewNote: React.FC<ViewNoteProps> = ({
   return (
     <div className="register-note-wrapper">
       <h2>Detalle de la Nota</h2>
-      
       <form>
-
         <div>
           <label>Título:</label>
           <input type="text" value={note.title} readOnly />
-          
         </div>
+
         <div>
           <label>Contenido:</label>
           <textarea className="textarea-content" value={note.content} readOnly />
@@ -89,7 +87,7 @@ const ViewNote: React.FC<ViewNoteProps> = ({
             <input type="date" value={note.endDate.split("T")[0]} readOnly />
           </div>
         </div>
-        
+
         <div className="form-state">
           {["PENDING", "IN_PROGRESS", "COMPLETED"].map((status) => (
             <div
@@ -107,48 +105,42 @@ const ViewNote: React.FC<ViewNoteProps> = ({
           ))}
         </div>
 
-      <div style={{ display: "flex", gap: "10px", marginTop: "20px", width: "100%" }}>
-      <Link to={`/edit/${note.id}`} style={{ flex: 1 }}>
+        <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
           <button
             type="button"
-            className="edit"
-            style={{ backgroundColor: "#3498db",width: "50%"}} // Azul para el botón Editar
+            className="btn-Registrar"
+            onClick={() => confirmDelete(note.id)}
+            style={{ backgroundColor: "#e74c3c" }}
           >
-            Editar
+            Eliminar
           </button>
-        </Link>
-
-        <button
-          type="button"
-          className="delete"
-          onClick={() => confirmDelete(note.id)}
-          style={{ backgroundColor: "#e74c3c", width: "40%" }} // Rojo para el botón Eliminar
-        >
-          Eliminar
-      </button>
-
-    </div>
-
+          <button
+            type="button"
+            className="btn-Registrar"
+            onClick={onClose}
+            style={{ backgroundColor: "#3498db" }}
+          >
+            Volver
+          </button>
+          <button
+            type="button"
+            className="btn-Registrar"
+            onClick={onPrev}
+            style={{ backgroundColor: "#9b59b6" }}
+          >
+            Anterior
+          </button>
+          <button
+            type="button"
+            className="btn-Registrar"
+            onClick={onNext}
+            style={{ backgroundColor: "#2ecc71" }}
+          >
+            Siguiente
+          </button>
+        </div>
       </form>
-      <div >
 
-        {/* Botón para cerrar (X) */}
-        <button className="close-btn" onClick={onClose}>
-          X
-        </button>
-
-        {/* Información adicional de la nota */}
-      </div>
-
-      {/* Botones de navegación lateral */}
-      <button className="nav-btn left" onClick={onPrev}>
-        &#10094; {/* Flecha izquierda */}
-      </button>
-      <button className="nav-btn right" onClick={onNext}>
-        &#10095; {/* Flecha derecha */}
-      </button>
-
-      {/* Modal de confirmación para eliminar */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">

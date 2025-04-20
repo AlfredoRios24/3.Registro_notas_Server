@@ -1,55 +1,8 @@
-.view-note-wrapper {
-  position: relative;
-}
-
-.view-note-container {
-  width: 98%;
-  height: 90%;
-  background: #fff;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-  border-radius: 8px;
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  transform: translateY(-11%);
-  
-}
-
-.content-container {
-  width: 98%;
-  width: 1700px;
-  height: 1000px;
-  overflow-y: auto; /* Aquí activamos el desplazamiento vertical */
-  background-color: rgba(249, 246, 246, 0.99);
-
-}
-
-.note-content {
-  flex: 1;
-  text-align: center;
-  padding: 20px;
-}
-
-h2 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-p {
-  font-size: 1.5rem;
-  color: black;
-  line-height: 1.6;
-}
-
+/* Modificar el botón de la X (cerrar) */
 .close-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-
   background: #ff4081;
   color: white;
   border: none;
@@ -64,131 +17,106 @@ p {
   background-color: #e91e63;
 }
 
+/* Estilos para botones laterales de navegación */
 .nav-btn {
-  background: white;
+  background: transparent;
   border: none;
-  font-size: 10rem;
-  color: black;
+  font-size: 3rem;
+  color: #3498db;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
 }
 
 .nav-btn:hover {
-  color: #ff4081;
+  color: #2980b9;
 }
 
 .left {
   position: fixed;
-  left: 50px;
-  top: 70%;
+  left: 200px;
+  top: 50%;
   transform: translateY(-50%);
+  font-size: 200px; /* Aumenta según lo que necesites */
+
 }
 
 .right {
   position: fixed;
-  right: 50px;
-  top: 70%;
+  right: 200px;
+  top: 50%;
   transform: translateY(-50%);
+  font-size: 200px; /* Aumenta según lo que necesites */
 }
 
-.actions-container {
-  display: flex;
-  justify-content: center;
-  gap: 100px;
-  margin-top: 20px;
-  width: 100%;
-}
-
-button {
-  padding: 8px 10px;
-  margin: 10px;
-  border: none;
+/* Botones de eliminar y editar */
+.edit {
+  background-color: #2196f3; /* Azul */
+  color: white;
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 50px;
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+
+
 }
 
-button:hover {
-  opacity: 0.8;
-}
-
-button.delete {
-  background-color: #f44336;
+.delete {
+  background-color: #f44336; /* Rojo */
   color: white;
-}
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
 
-button.edit {
-  background-color: #2196f3;
-  color: white;
-}
-
-button.confirm-delete {
-  background-color: #f44336;
-  color: white;
-}
-
-button.cancel-delete {
-  background-color: #4caf50;
-  color: white;
+  
 }
 
 .dates-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
-.date-item {
+/* Modal de confirmación */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 100px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
   text-align: center;
 }
 
-.p-fecha {
-  font-size: 20px;
-  color: black;
-  font-style: italic;
-  font-weight: bold;
-  text-align: right;
+.confirm-delete, .cancel-delete {
+  padding: 20px 30px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.state-container {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-weight: bold;
-  padding: 10px;
-  margin-top: 10px;
-}
-
-
-
-
-.modal {
-
-  padding: 50px;
-  border-radius: 10px;
-
-
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-
-  position: fixed;
-  top: 300px;
-  left: 800px;
-  right: 300px;
-  bottom: 300px;
-  width: 20%;
-  height: 20%;
-  display: flex;
-  justify-content: center; /* Centrado horizontal */
-  align-items: center;     /* Centrado vertical */
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+.confirm-delete {
+  background-color: #4caf50;
   color: white;
-  z-index: 9999; /* Asegura que el modal esté encima del contenido */
-  display: grid;
-  place-items: center; /* Centra el contenido horizontal y vertical */
-  align-items: center;
+  font-size: x-large;
 }
 
-h3{
+.cancel-delete {
+  background-color: #f44336;
   color: white;
+  font-size: x-large;
 }
