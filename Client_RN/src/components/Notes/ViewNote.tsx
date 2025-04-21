@@ -112,7 +112,7 @@ const ViewNote: React.FC<ViewNoteProps> = ({
           <button
             type="button"
             className="edit"
-            style={{ backgroundColor: "#3498db",width: "50%"}} // Azul para el botón Editar
+            style={{ backgroundColor: "#ff4081",width: "50%"}} // Azul para el botón Editar
           >
             Editar
           </button>
