@@ -1,19 +1,18 @@
 services:
   - type: web
     name: registro-notas-server
-    plan: free
     env: java
+    plan: free
     branch: main
-    rootDir: .
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/Register_Notes-0.0.1-SNAPSHOT.jar
     envVars:
       - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://<TU_HOST>:3306/registro_notes?useSSL=false&serverTimezone=UTC
+        value: jdbc:postgresql://dpg-d235kb7gi27c73fk5o80-a.frankfurt-postgres.render.com:5432/registro_notes
       - key: SPRING_DATASOURCE_USERNAME
         value: root
       - key: SPRING_DATASOURCE_PASSWORD
-        value: 852654
+        value: W3xfDWsIbxXUT9iMrbofkf4Q3210BpIT
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: update
       - key: SERVER_PORT
