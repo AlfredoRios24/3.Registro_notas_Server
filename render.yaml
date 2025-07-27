@@ -1,10 +1,20 @@
 services:
   - type: web
     name: registro-notas-server
-    env: java
     plan: free
-    buildCommand: ./mvnw clean install
-    startCommand: java -jar target/*.jar
     branch: main
-    region: oregon
-    rootDir: . # si tu pom.xml está en la raíz
+    rootDir: .
+    buildCommand: ./mvnw clean install
+    startCommand: java -jar target/demo-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://<TU_HOST>:3306/registro_notes?useSSL=false&serverTimezone=UTC
+      - key: SPRING_DATASOURCE_USERNAME
+        value: root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: 852654
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SERVER_PORT
+        value: 8091
+
