@@ -2,6 +2,7 @@ services:
   - type: web
     name: registro-notas-server
     plan: free
+    env: java
     branch: main
     rootDir: .
     buildCommand: ./mvnw clean package -DskipTests
