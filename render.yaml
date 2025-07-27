@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: registro-notas-server
+    env: java
+    plan: free
+    buildCommand: ./mvnw clean install
+    startCommand: java -jar target/*.jar
+    branch: main
+    region: oregon
+    rootDir: . # si tu pom.xml está en la raíz
