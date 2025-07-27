@@ -17,4 +17,3 @@ services:
         value: update
       - key: SERVER_PORT
         value: 8091
-
