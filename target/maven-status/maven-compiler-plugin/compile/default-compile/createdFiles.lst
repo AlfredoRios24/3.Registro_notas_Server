@@ -1,0 +1,10 @@
+com\example\demo\RegisterNotesApplication.class
+com\example\demo\Controller\NotesController.class
+com\example\demo\Controller\SectionsController.class
+com\example\demo\Models\Sections.class
+com\example\demo\Repository\NotesRepository.class
+com\example\demo\Repository\SectionsRepository.class
+com\example\demo\Models\NoteState.class
+com\example\demo\Controller\CorsConfig.class
+com\example\demo\Service\NotesService.class
+com\example\demo\Models\Notes.class

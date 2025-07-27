@@ -47,18 +47,29 @@ public class NotesService {
         return false;
     }
 
-    // Actualizar una nota
+    // Actualizar una nota con validación de fechas
     public Optional<Notes> updateNote(Long id, Notes updatedNotes) {
         Optional<Notes> notesOptional = notesRepository.findById(id);
         if (notesOptional.isPresent()) {
             Notes existingNotes = notesOptional.get();
+
             existingNotes.setTitle(updatedNotes.getTitle());
             existingNotes.setContent(updatedNotes.getContent());
-            existingNotes.setStartDate(updatedNotes.getStartDate());
-            existingNotes.setEndDate(updatedNotes.getEndDate());
-            existingNotes.setState(updatedNotes.getState());
-            return Optional.of(notesRepository.save(existingNotes));
 
+            if (updatedNotes.getStartDate() != null) {
+                existingNotes.setStartDate(updatedNotes.getStartDate());
+            }
+            if (updatedNotes.getEndDate() != null) {
+                if (existingNotes.getStartDate() != null &&
+                        updatedNotes.getEndDate().isBefore(existingNotes.getStartDate())) {
+                    throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+                }
+                existingNotes.setEndDate(updatedNotes.getEndDate());
+            }
+
+            existingNotes.setState(updatedNotes.getState());
+
+            return Optional.of(notesRepository.save(existingNotes));
         }
         return Optional.empty();
     }

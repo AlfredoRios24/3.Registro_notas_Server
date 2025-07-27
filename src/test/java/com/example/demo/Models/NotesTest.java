@@ -75,4 +75,22 @@ public class NotesTest {
         // Then
         assertEquals(validContent, note.getContent());
     }
+
+    @Test
+    public void testSetEndDateBeforeStartDateThrowsException() {
+        // Establecemos una fecha de inicio
+        LocalDateTime startDate = LocalDateTime.now();
+        note.setStartDate(startDate);
+
+        // Intentamos establecer una fecha de fin anterior a la fecha de inicio
+        LocalDateTime invalidEndDate = startDate.minusDays(1);
+
+        // Verificamos que se lance la excepción esperada
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            note.setEndDate(invalidEndDate);
+        });
+
+        assertEquals("La fecha de fin no puede ser anterior a la fecha de inicio.", exception.getMessage());
+    }
+
 }

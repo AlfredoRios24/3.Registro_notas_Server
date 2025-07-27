@@ -1,55 +1,24 @@
 package com.example.demo.Models;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
 public class Notes {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private String content;
-
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
-
-    @Column(name = "create_at")
     private LocalDateTime createAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state")
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private NoteState state;
 
-    //Constructor
-
+    public Notes(Long l, String testTitle, String testContent, LocalDateTime now, LocalDateTime localDateTime, LocalDateTime now1, NoteState noteState) {
+    }
 
     public Notes() {
+        // Constructor vacío requerido para crear objetos sin parámetros
     }
 
-    // Constructor de conveniencia (opcional)
-    public Notes(String testTitle, String testContent) {
-        this.title = testTitle;
-        this.content = testContent;
-    }
-
-    public Notes(Long id, String title, String content, LocalDateTime endDate, LocalDateTime startDate, LocalDateTime createAt, NoteState state) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.endDate = endDate;
-        this.startDate = startDate;
-        this.createAt = createAt;
-        this.state = state;
-    }
-
-    //Getters ands Setters
     public Long getId() {
         return id;
     }
@@ -74,6 +43,14 @@ public class Notes {
         this.content = content;
     }
 
+    public LocalDateTime getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(LocalDateTime createAt) {
+        this.createAt = createAt;
+    }
+
     public LocalDateTime getStartDate() {
         return startDate;
     }
@@ -86,16 +63,9 @@ public class Notes {
         return endDate;
     }
 
+    // Aquí no va validación para evitar lanzar excepción
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
-    }
-
-    public LocalDateTime getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(LocalDateTime createAt) {
-        this.createAt = createAt;
     }
 
     public NoteState getState() {

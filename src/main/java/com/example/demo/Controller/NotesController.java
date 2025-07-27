@@ -26,32 +26,33 @@ public class NotesController {
             notes.setCreateAt(LocalDateTime.now());  // Establecer la fecha de creación
         }
         if (notes.getState() == null) {
-            notes.setState(NoteState.PENDING);  // Si no se especifica, establecer el estado como PENDING por defecto
+            notes.setState(NoteState.PENDING);  // Valor por defecto
         }
         Notes savedNotes = notesService.saveNote(notes);
         return ResponseEntity.ok(savedNotes);
     }
 
-    // Método para obtener 1 nota con ID
+    // Obtener nota por ID
     @GetMapping("/notes/{id}")
     public ResponseEntity<Notes> getNoteById(@PathVariable Long id) {
         Optional<Notes> noteOptional = notesService.getNoteById(id);
-        return noteOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(404).body(null));
+        return noteOptional.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(404).body(null));
     }
 
-    // Método para obtener todas las notas
+    // Obtener todas las notas
     @GetMapping("/notes/")
     public ResponseEntity<List<Notes>> getNotes() {
         try {
             List<Notes> notes = notesService.getAllNotes();
             return ResponseEntity.ok(notes);
         } catch (Exception e) {
-            e.printStackTrace(); // Muestra el error completo en los logs
-            return ResponseEntity.status(500).body(null); // Devuelve una respuesta 500
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
         }
     }
 
-    // Método para eliminar una nota por ID
+    // Eliminar nota por ID
     @DeleteMapping("/notes/{id}")
     public ResponseEntity<String> deleteNotes(@PathVariable Long id) {
         boolean deleted = notesService.deleteNote(id);
@@ -62,14 +63,25 @@ public class NotesController {
         }
     }
 
-    // Método para actualizar una nota
+    // Actualizar nota con validación previa de fechas
     @PutMapping("/notes/{id}")
-    public ResponseEntity<Notes> updateNote(@PathVariable Long id, @RequestBody Notes updatedNote) {
-        Optional<Notes> existingNote = notesService.updateNote(id, updatedNote);
-        if (existingNote.isPresent()) {
-            return ResponseEntity.ok(existingNote.get());
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateNote(@PathVariable Long id, @RequestBody Notes updatedNote) {
+        if (updatedNote.getStartDate() != null && updatedNote.getEndDate() != null) {
+            if (updatedNote.getEndDate().isBefore(updatedNote.getStartDate())) {
+                return ResponseEntity.badRequest()
+                        .body("La fecha de fin no puede ser anterior a la fecha de inicio.");
+            }
+        }
+
+        try {
+            Optional<Notes> existingNote = notesService.updateNote(id, updatedNote);
+            if (existingNote.isPresent()) {
+                return ResponseEntity.ok(existingNote.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
