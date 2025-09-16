@@ -1,12 +1,12 @@
 # =========================
 # Stage 1: Build
 # =========================
-FROM maven:3.9.1-eclipse-temurin-17 AS build
+FROM maven:3.9.1-eclipse-temurin-21 AS build
 
-# Directorio de trabajo
+# Directorio de la app
 WORKDIR /app
 
-# Copiar pom.xml y fuentes
+# Copiar POM y código fuente
 COPY pom.xml .
 COPY src ./src
 
@@ -14,20 +14,20 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # =========================
-# Stage 2: Run
+# Stage 2: Runtime
 # =========================
 FROM openjdk:17-jdk-slim
+
+# Perfil activo de Spring Boot
+ENV SPRING_PROFILES_ACTIVE=prod
 
 # Directorio de la app
 WORKDIR /app
 
-# Copiar el JAR generado desde el stage de build
+# Copiar el JAR generado desde la fase de build
 COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# Activar perfil de producción
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Exponer el puerto de Spring Boot
+# Exponer el puerto que usa Spring Boot
 EXPOSE 8080
 
 # Comando de arranque
