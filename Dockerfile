@@ -1,16 +1,16 @@
 # Imagen base
 FROM openjdk:17-jdk-slim
 
-# Variables de entorno para Spring
+# Perfil activo de Spring Boot
 ENV SPRING_PROFILES_ACTIVE=prod
 
 # Directorio de la app
 WORKDIR /app
 
-# Copiar el jar generado
+# Copiar el JAR generado por Maven
 COPY target/3.Registro_notas_Server-0.0.1-SNAPSHOT.jar app.jar
 
-# Exponer el puerto que usa Spring Boot
+# Exponer el puerto
 EXPOSE 8080
 
 # Comando de arranque
