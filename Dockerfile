@@ -1,7 +1,7 @@
 # =========================
 # Stage 1: Build
 # =========================
-FROM maven:3.9.1-jdk-21 AS build
+FROM maven:3.9.1-eclipse-temurin-21 AS build
 
 # Directorio de trabajo
 WORKDIR /app
@@ -24,13 +24,6 @@ ENV SPRING_PROFILES_ACTIVE=prod
 
 # Directorio de trabajo
 WORKDIR /app
-
-# Variables de entorno para la base de datos de Render
-ENV DB_HOST=dpg-d340oq3uibrs73b0dmcg-a.frankfurt-postgres.render.com
-ENV DB_PORT=5432
-ENV DB_NAME=database_36ve
-ENV DB_USER=root
-ENV DB_PASSWORD=K8o1DP8OVKH2QWMAiqCjBAPwD7NAg4Ux
 
 # Copiar el JAR generado desde la fase de build
 COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
