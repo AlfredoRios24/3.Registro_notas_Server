@@ -1,29 +1,35 @@
-# ===================================
-# Dockerfile ultraoptimizado para Maven + Java 21
-# ===================================
+# =========================
+# Stage 1: Build
+# =========================
+FROM maven:3.9.4-eclipse-temurin-21 AS build
 
-# 1. Imagen base con Maven + JDK 21
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-
-# 2. Directorio de trabajo
+# Directorio de trabajo
 WORKDIR /app
 
-# 3. Copiar los archivos de proyecto
+# Copiar POM y descargar dependencias (caché)
 COPY pom.xml .
-COPY src ./src
+RUN mvn dependency:go-offline
 
-# 4. Compilar sin tests
+# Copiar código fuente y compilar empaquetando el JAR (sin tests)
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-# 5. Imagen final más ligera (solo JDK 21)
-FROM eclipse-temurin:21-jre
+# =========================
+# Stage 2: Runtime
+# =========================
+FROM eclipse-temurin:21-jdk-jammy
+
+# Perfil activo de Spring Boot
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Directorio de trabajo
 WORKDIR /app
 
-# 6. Copiar el JAR compilado
-COPY --from=build /app/target/*.jar app.jar
+# Copiar el JAR generado desde la fase de build
+COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# 7. Exponer puerto
+# Exponer puerto
 EXPOSE 8080
 
-# 8. Ejecutar la app
+# Comando de arranque
 ENTRYPOINT ["java", "-jar", "app.jar"]
