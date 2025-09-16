@@ -1,0 +1,13 @@
+# Ignorar archivo de configuración sensible
+.env
+
+# Archivos de compilación
+/target/
+
+# Archivos de logs
+*.log
+
+# Archivos temporales del sistema/IDE
+.idea/
+*.iml
+.DS_Store
