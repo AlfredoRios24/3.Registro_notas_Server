@@ -1,35 +1,33 @@
 # =========================
 # Stage 1: Build
 # =========================
-FROM maven:3.9.1-jdk-21 AS build
+FROM maven:3.9.1-eclipse-temurin-20 AS build
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar pom.xml y descargar dependencias offline
+# Copiar solo pom.xml y descargar dependencias offline para cachear
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copiar código fuente y compilar empaquetando el JAR sin tests
+# Copiar código fuente y compilar JAR sin tests
 COPY src ./src
 RUN mvn clean package -DskipTests
 
 # =========================
 # Stage 2: Runtime
 # =========================
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:20-jdk-jammy
 
-# Perfil activo de Spring Boot
+# Perfil de Spring Boot
 ENV SPRING_PROFILES_ACTIVE=prod
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar el JAR generado desde la fase de build
+# Copiar el JAR compilado desde la fase de build
 COPY --from=build /app/target/demo-0.0.1-SNAPSHOT.jar app.jar
 
-# Exponer el puerto que usa Spring Boot
+# Exponer puerto
 EXPOSE 8080
 
-# Comando de arranque
+# Ejecutar la app
 ENTRYPOINT ["java", "-jar", "app.jar"]
