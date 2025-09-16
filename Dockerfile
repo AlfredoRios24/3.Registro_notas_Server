@@ -8,7 +8,7 @@ ENV SPRING_PROFILES_ACTIVE=prod
 WORKDIR /app
 
 # Copiar el JAR generado por Maven
-COPY target/3.Registro_notas_Server-0.0.1-SNAPSHOT.jar app.jar
+COPY target/demo-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponer el puerto
 EXPOSE 8080
