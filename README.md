@@ -77,7 +77,7 @@ Además, este proyecto busca consolidar conocimientos clave como:
 
 Clonar el repositorio
 
-git clone https://github.com/tu-usuario/register-notes-backend.git
+git clone https://github.com/AlfredoRios24/3.Registro_notas_Server.git
 cd register-notes-backend
 
 Levantar los contenedores con Docker Compose
