@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo;
 
 import com.example.demo.Models.NoteState;
 import com.example.demo.Models.Notes;
