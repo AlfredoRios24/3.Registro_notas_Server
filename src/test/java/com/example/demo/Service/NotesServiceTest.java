@@ -2,23 +2,21 @@ package com.example.demo.Service;
 
 import com.example.demo.Models.NoteState;
 import com.example.demo.Models.Notes;
+import com.example.demo.Models.Users;
 import com.example.demo.Repository.NotesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 class NotesServiceTest {
 
     @Mock
@@ -27,104 +25,109 @@ class NotesServiceTest {
     @InjectMocks
     private NotesService notesService;
 
-    private Notes note;
+    private Users testUser;
 
     @BeforeEach
-    void setup() {
-        note = new Notes();
-        note.setId(1L);
-        note.setTitle("Nota de prueba");
-        note.setContent("Contenido de prueba");
-        note.setCreateAt(LocalDateTime.now());
-        note.setState(NoteState.PENDING);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        testUser = new Users();
+        testUser.setId(1L);
+        testUser.setName("Test User");
+        testUser.setEmail("test@example.com");
     }
 
     @Test
-    void saveNote_deberiaGuardarNotaCorrectamente() {
-        when(notesRepository.save(any(Notes.class))).thenReturn(note);
+    void testSaveNoteForUser() {
+        Notes note = new Notes();
+        note.setTitle("Test Note");
+        note.setContent("Content");
 
-        Notes result = notesService.saveNote(note);
+        when(notesRepository.save(any(Notes.class))).thenAnswer(i -> i.getArgument(0));
 
-        assertNotNull(result);
-        assertEquals("Nota de prueba", result.getTitle());
+        Notes saved = notesService.saveNoteForUser(note, testUser);
+
+        assertNotNull(saved.getCreateAt());
+        assertEquals(NoteState.PENDING, saved.getState());
+        assertEquals(testUser, saved.getUser());
         verify(notesRepository, times(1)).save(any(Notes.class));
     }
 
     @Test
-    void getNoteById_deberiaRetornarNota() {
-        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
+    void testGetAllNotesForUser() {
+        Notes note = new Notes();
+        note.setUser(testUser);
 
-        Optional<Notes> found = notesService.getNoteById(1L);
+        when(notesRepository.findAllByUser(testUser)).thenReturn(List.of(note));
 
-        assertTrue(found.isPresent());
-        assertEquals("Nota de prueba", found.get().getTitle());
-    }
-
-    @Test
-    void getAllNotes_deberiaRetornarListaDeNotas() {
-        when(notesRepository.findAll()).thenReturn(List.of(note));
-
-        List<Notes> notes = notesService.getAllNotes();
+        List<Notes> notes = notesService.getAllNotesForUser(testUser);
 
         assertEquals(1, notes.size());
-        verify(notesRepository, times(1)).findAll();
+        assertEquals(testUser, notes.get(0).getUser());
     }
 
     @Test
-    void deleteNote_deberiaEliminarSiExiste() {
-        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
+    void testGetNoteByIdForUser() {
+        Notes note = new Notes();
+        note.setId(1L);
+        note.setUser(testUser);
 
-        boolean deleted = notesService.deleteNote(1L);
+        when(notesRepository.findByIdAndUser(1L, testUser)).thenReturn(Optional.of(note));
 
-        assertTrue(deleted);
-        verify(notesRepository).deleteById(1L);
-    }
-
-    @Test
-    void deleteNote_noDebeEliminarSiNoExiste() {
-        when(notesRepository.findById(1L)).thenReturn(Optional.empty());
-
-        boolean deleted = notesService.deleteNote(1L);
-
-        assertFalse(deleted);
-        verify(notesRepository, never()).deleteById(any());
-    }
-
-    @Test
-    void updateNote_deberiaActualizarNotaExistente() {
-        Notes updated = new Notes();
-        updated.setTitle("Título nuevo");
-        updated.setContent("Contenido nuevo");
-        updated.setState(NoteState.IN_PROGRESS);
-
-        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
-        when(notesRepository.save(any(Notes.class))).thenReturn(updated);
-
-        Optional<Notes> result = notesService.updateNote(1L, updated);
+        Optional<Notes> result = notesService.getNoteByIdForUser(1L, testUser);
 
         assertTrue(result.isPresent());
-        assertEquals("Título nuevo", result.get().getTitle());
+        assertEquals(1L, result.get().getId());
+        assertEquals(testUser, result.get().getUser());
     }
 
     @Test
-    void updateNote_noDebeActualizarSiNoExiste() {
-        when(notesRepository.findById(1L)).thenReturn(Optional.empty());
+    void testUpdateNoteForUser() {
+        Notes existingNote = new Notes();
+        existingNote.setId(1L);
+        existingNote.setUser(testUser);
+        existingNote.setTitle("Old Title");
+        existingNote.setContent("Old Content");
+        existingNote.setState(NoteState.PENDING);
+        existingNote.setCreateAt(LocalDateTime.now());
 
-        Optional<Notes> result = notesService.updateNote(1L, note);
+        Notes updatedNote = new Notes();
+        updatedNote.setTitle("Updated Title");
+        updatedNote.setContent("Updated Content");
+        updatedNote.setState(NoteState.COMPLETED);
 
-        assertTrue(result.isEmpty());
-        verify(notesRepository, never()).save(any());
+        when(notesRepository.findByIdAndUser(1L, testUser)).thenReturn(Optional.of(existingNote));
+        when(notesRepository.save(any(Notes.class))).thenAnswer(i -> i.getArgument(0));
+
+        Optional<Notes> result = notesService.updateNoteForUser(1L, updatedNote, testUser);
+
+        assertTrue(result.isPresent());
+        assertEquals("Updated Title", result.get().getTitle());
+        assertEquals("Updated Content", result.get().getContent());
+        assertEquals(NoteState.COMPLETED, result.get().getState());
     }
 
     @Test
-    void updateNote_lanzaExcepcionSiEndDateAntesDeStartDate() {
-        Notes updated = new Notes();
-        updated.setStartDate(LocalDateTime.now());
-        updated.setEndDate(LocalDateTime.now().minusDays(1));
+    void testDeleteNoteForUser() {
+        Notes note = new Notes();
+        note.setId(1L);
+        note.setUser(testUser);
 
-        when(notesRepository.findById(1L)).thenReturn(Optional.of(note));
+        when(notesRepository.findByIdAndUser(1L, testUser)).thenReturn(Optional.of(note));
+        doNothing().when(notesRepository).delete(note);
 
-        assertThrows(IllegalArgumentException.class,
-                () -> notesService.updateNote(1L, updated));
+        boolean deleted = notesService.deleteNoteForUser(1L, testUser);
+
+        assertTrue(deleted);
+        verify(notesRepository, times(1)).delete(note);
+    }
+
+    @Test
+    void testDeleteNoteForUserNotFound() {
+        when(notesRepository.findByIdAndUser(2L, testUser)).thenReturn(Optional.empty());
+
+        boolean deleted = notesService.deleteNoteForUser(2L, testUser);
+
+        assertFalse(deleted);
     }
 }

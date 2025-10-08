@@ -2,101 +2,128 @@ package com.example.demo;
 
 import com.example.demo.Models.NoteState;
 import com.example.demo.Models.Notes;
-import com.example.demo.Repository.NotesRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.demo.Models.Users;
+import com.example.demo.Service.NotesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
 class NotesControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private NotesService notesService;
 
-    @Autowired
-    private NotesRepository notesRepository;
+    @Mock
+    private Authentication authentication;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private NotesController notesController;
 
-    private Notes note;
+    private Users testUser;
 
     @BeforeEach
-    void setup() {
-        notesRepository.deleteAll();
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
 
-        note = new Notes();
-        note.setTitle("Nota de integración");
-        note.setContent("Contenido de integración");
-        note.setCreateAt(LocalDateTime.now());
-        note.setState(NoteState.PENDING);
+        testUser = new Users();
+        testUser.setId(1L);
+        testUser.setName("Test User");
+        testUser.setEmail("test@example.com");
 
-        notesRepository.save(note);
+        when(authentication.getPrincipal()).thenReturn(testUser);
     }
 
     @Test
-    void deberiaListarNotas() throws Exception {
-        mockMvc.perform(get("/api/notes/"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].title").value("Nota de integración"));
+    void testRegisterNotes() {
+        Notes note = new Notes();
+        note.setTitle("New Note");
+        note.setContent("Content");
+
+        when(notesService.saveNoteForUser(note, testUser)).thenReturn(note);
+
+        ResponseEntity<Notes> response = notesController.registerNotes(note, authentication);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(note, response.getBody());
+        verify(notesService, times(1)).saveNoteForUser(note, testUser);
     }
 
     @Test
-    void deberiaObtenerNotaPorId() throws Exception {
-        mockMvc.perform(get("/api/notes/{id}", note.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Nota de integración"));
+    void testGetNotes() {
+        Notes note = new Notes();
+        note.setUser(testUser);
+
+        when(notesService.getAllNotesForUser(testUser)).thenReturn(List.of(note));
+
+        ResponseEntity<List<Notes>> response = notesController.getNotes(authentication);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
+        assertEquals(testUser, response.getBody().get(0).getUser());
     }
 
     @Test
-    void deberiaCrearNota() throws Exception {
-        Notes newNote = new Notes();
-        newNote.setTitle("Nueva nota");
-        newNote.setContent("Contenido nuevo");
+    void testGetNoteById() {
+        Notes note = new Notes();
+        note.setId(1L);
+        note.setUser(testUser);
 
-        mockMvc.perform(post("/api/register/")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newNote)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Nueva nota"));
+        when(notesService.getNoteByIdForUser(1L, testUser)).thenReturn(Optional.of(note));
+
+        ResponseEntity<Notes> response = notesController.getNoteById(1L, authentication);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(note, response.getBody());
     }
 
     @Test
-    void deberiaActualizarNota() throws Exception {
-        note.setTitle("Título actualizado");
+    void testUpdateNote() {
+        Notes updatedNote = new Notes();
+        updatedNote.setTitle("Updated");
+        updatedNote.setContent("Updated content");
 
-        mockMvc.perform(put("/api/notes/{id}", note.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(note)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Título actualizado"));
+        Notes returnedNote = new Notes();
+        returnedNote.setId(1L);
+        returnedNote.setTitle("Updated");
+        returnedNote.setContent("Updated content");
+        returnedNote.setUser(testUser);
+
+        when(notesService.updateNoteForUser(1L, updatedNote, testUser)).thenReturn(Optional.of(returnedNote));
+
+        ResponseEntity<?> response = notesController.updateNote(1L, updatedNote, authentication);
+
+        assertEquals(200, ((ResponseEntity<?>) response).getStatusCodeValue());
+        assertEquals(returnedNote, ((ResponseEntity<?>) response).getBody());
     }
 
     @Test
-    void deberiaEliminarNota() throws Exception {
-        mockMvc.perform(delete("/api/notes/{id}", note.getId()))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Nota eliminada exitosamente")));
+    void testDeleteNote() {
+        when(notesService.deleteNoteForUser(1L, testUser)).thenReturn(true);
+
+        ResponseEntity<String> response = notesController.deleteNotes(1L, authentication);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Nota eliminada exitosamente", response.getBody());
     }
 
     @Test
-    void deberiaRetornar404SiNoExisteNota() throws Exception {
-        mockMvc.perform(get("/api/notes/{id}", 999))
-                .andExpect(status().isNotFound());
+    void testDeleteNoteNotFound() {
+        when(notesService.deleteNoteForUser(2L, testUser)).thenReturn(false);
+
+        ResponseEntity<String> response = notesController.deleteNotes(2L, authentication);
+
+        assertEquals(404, response.getStatusCodeValue());
+        assertEquals("Nota no encontrada", response.getBody());
     }
 }
